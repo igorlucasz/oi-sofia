@@ -1,0 +1,25 @@
+{
+  "name": "oi-sofia",
+  "version": "1.0.0",
+  "description": "Site de Feliz Aniversário para minha amiga",
+  "homepage": "https://github.com/igorlucasz/oi-sofia#readme",
+  "bugs": {
+    "url": "https://github.com/igorlucasz/oi-sofia/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/igorlucasz/oi-sofia.git"
+  },
+  "license": "MIT",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev"
+  },
+  "dependencies": {
+    "next": "^16.2.6",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  }
+}
