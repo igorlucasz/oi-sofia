@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { Button } from '../components/ui/index.js';
 
 const CORRECT_DATE = '02/06/2007';
 
@@ -17,32 +16,25 @@ export default function EntryPage() {
   const [status, setStatus] = useState('idle');
 
   function handleChange(e) {
-    setStatus('idle');
-    setValue(applyMask(e.target.value));
-  }
-
-  function handleSubmit() {
-    if (value === CORRECT_DATE) {
-      setStatus('success');
-      setTimeout(() => {
-        sessionStorage.setItem('sofia-auth', 'true');
-        router.push('/home');
-      }, 700);
-    } else {
-      setStatus('error');
-      setValue('');
-      setTimeout(() => setStatus('idle'), 500);
+    if (status !== 'idle') setStatus('idle');
+    const masked = applyMask(e.target.value);
+    setValue(masked);
+    if (masked.length === 10) {
+      if (masked === CORRECT_DATE) {
+        setStatus('success');
+        setTimeout(() => {
+          sessionStorage.setItem('sofia-auth', 'true');
+          router.push('/home');
+        }, 1200);
+      } else {
+        setStatus('error');
+      }
     }
-  }
-
-  function handleKeyDown(e) {
-    if (e.key === 'Enter' && value.length > 0) handleSubmit();
   }
 
   return (
     <main className="min-h-screen bg-parchment-100 flex flex-col items-center justify-center px-6">
 
-      {/* Ornamento SVG losango duplo */}
       <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true" className="mb-8">
         <path d="M24 2 L46 24 L24 46 L2 24 Z" stroke="#A88830" strokeWidth="1.2" />
         <path d="M24 10 L38 24 L24 38 L10 24 Z" stroke="#A88830" strokeWidth="0.8" />
@@ -65,8 +57,7 @@ export default function EntryPage() {
         placeholder="DD/MM/AAAA"
         value={value}
         onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        className={`w-full max-w-[280px] text-center font-sc tracking-widest bg-transparent border-b py-3 outline-none text-lg placeholder:text-parchment-400 ${
+        className={`w-full max-w-[280px] text-center font-sc tracking-widest bg-transparent border-b py-3 outline-none text-lg placeholder:text-parchment-400 transition-colors duration-200 ${
           status === 'error'
             ? 'border-red-700/70 text-red-800 animate-shake'
             : status === 'success'
@@ -75,19 +66,18 @@ export default function EntryPage() {
         }`}
       />
 
-      <Button
-        variant="outline"
-        onClick={handleSubmit}
-        className={`mt-8 ${value.length === 0 ? 'opacity-40 pointer-events-none' : ''}`}
-      >
-        Entrar
-      </Button>
-
-      {status === 'error' && (
-        <p className="font-sc text-label tracking-wider text-red-800/70 text-center mt-4">
-          Data incorreta. Tente novamente.
-        </p>
-      )}
+      <div className="mt-5 h-6">
+        {status === 'error' && (
+          <p className="font-sc text-label tracking-wider text-red-800/70 text-center">
+            Não era pra você acessar isso aqui... 🤨
+          </p>
+        )}
+        {status === 'success' && (
+          <p className="font-sc text-label tracking-wider text-green-800/80 text-center">
+            Oi, Sofia rs
+          </p>
+        )}
+      </div>
 
     </main>
   );
