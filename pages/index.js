@@ -66,14 +66,14 @@ export default function EntryPage() {
         }`}
       />
 
-      <div className="mt-5 h-6">
+      <div className="mt-5 h-8">
         {status === 'error' && (
-          <p className="font-sc text-label tracking-wider text-red-800/70 text-center">
+          <p className="font-sc text-sm tracking-wider text-red-800/70 text-center">
             Não era pra você acessar isso aqui... 🤨
           </p>
         )}
         {status === 'success' && (
-          <p className="font-sc text-label tracking-wider text-green-800/80 text-center">
+          <p className="font-sc text-sm tracking-wider text-green-800/80 text-center">
             Oi, Sofia rs
           </p>
         )}
