@@ -1,18 +1,17 @@
-// TODO: atualizar com as informações reais do estúdio
+export const SITE = {
+  name: "Sofia Marques",
+  year: 2025,
+  tagline: "Momentos que ficam para sempre.",
+  social: {
+    instagram: "#",
+    pinterest: "#",
+    email:     "sofia@example.com",
+  },
+};
 
-export const siteName = "Estúdio Sofia";
-
-export const siteDescription =
-  "Fotografia editorial vintage — capturando a beleza atemporal.";
-
-export const navLinks = [
-  { label: "Início", href: "/" },
-  { label: "Portfólio", href: "/portfolio" },
-  { label: "Sobre", href: "/sobre" },
-  { label: "Contato", href: "/contato" },
-];
-
-export const socialLinks = [
-  { label: "Instagram", href: "https://instagram.com/", icon: "instagram" },
-  { label: "Pinterest", href: "https://pinterest.com/", icon: "pinterest" },
+export const NAV_LINKS = [
+  { label: "Início",        href: "#inicio"    },
+  { label: "Galeria",       href: "#galeria"   },
+  { label: "Sobre a Sofia", href: "#sobre"     },
+  { label: "Mensagens",     href: "#mensagens" },
 ];
