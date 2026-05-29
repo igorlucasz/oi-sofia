@@ -64,11 +64,10 @@ export default function Home() {
 
       <Hero />
 
-      {/* Wrapper relativo para ancorar colonial1 na divisória galeria/quote */}
       <div className="relative">
         {/* Galeria contínua — memórias e fotos decorativas misturadas */}
         <section className="bg-parchment-100 pt-12 pb-20 overflow-hidden">
-          <div className="px-5 max-w-sm mx-auto space-y-6">
+          <div className="px-5 mx-auto space-y-6" style={{ maxWidth: "500px" }}>
             {/* mem — retrato, direita */}
             <div className="flex justify-end">
               <GalleryItem
@@ -76,6 +75,7 @@ export default function Home() {
                 w="65%"
                 ratio="3/4"
                 rot="-1.5deg"
+                mt="0rem"
               />
             </div>
 
@@ -181,27 +181,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* colonial1 — canto inferior direito, cruzando a divisória galeria→quote */}
-        <div
-          className="absolute right-0 z-10"
-          style={{ bottom: 0, transform: "translateY(0%)" }}
-        >
-          <div
-            className="relative overflow-hidden"
-            style={{ width: "100px", aspectRatio: "1/1" }} // colocar o width em 400 e mudar a imagem pra ficar sem bg
-          >
-            <Image
-              src="/images/colonial1.png"
-              alt=""
-              fill
-              unoptimized
-              style={{ objectFit: "cover" }}
-              sizes="150px"
-            />
-          </div>
-        </div>
       </div>
-      {/* fim wrapper relativo */}
 
       <Quote />
 

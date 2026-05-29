@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 const CORRECT_DATE = "02/06/2007";
 
@@ -33,64 +34,79 @@ export default function EntryPage() {
   }
 
   return (
-    <main className="min-h-screen bg-parchment-100 flex flex-col items-center justify-center px-6">
-      <svg
-        width="48"
-        height="48"
-        viewBox="0 0 48 48"
-        fill="none"
-        aria-hidden="true"
-        className="mb-8"
-      >
-        <path
-          d="M24 2 L46 24 L24 46 L2 24 Z"
-          stroke="#A88830"
-          strokeWidth="1.2"
-        />
-        <path
-          d="M24 10 L38 24 L24 38 L10 24 Z"
-          stroke="#A88830"
-          strokeWidth="0.8"
-        />
-      </svg>
-
-      <h1
-        className="font-display font-bold uppercase text-sepia-800 text-center mb-2 leading-tight"
-        style={{ fontSize: "clamp(2rem, 1.5rem + 2.5vw, 3.5rem)" }}
-      >
-        Para Sofia
-      </h1>
-
-      <p className="font-body italic text-sepia-600 text-center mb-10">
-        Digite a data de nascimento para continuar.
-      </p>
-
-      <input
-        type="text"
-        inputMode="numeric"
-        placeholder="DD/MM/AAAA"
-        value={value}
-        onChange={handleChange}
-        className={`w-full max-w-[280px] text-center font-sc tracking-widest bg-transparent border-b py-3 outline-none text-lg placeholder:text-parchment-400 transition-colors duration-200 ${
-          status === "error"
-            ? "border-red-700/70 text-red-800 animate-shake"
-            : status === "success"
-              ? "border-green-700/60 text-green-800 animate-success"
-              : "border-gold-600 text-sepia-800"
-        }`}
+    <main className="relative min-h-screen flex flex-col items-center justify-center px-6">
+      {/* fundo copacabana */}
+      <Image
+        src="/images/copacabana.png"
+        alt=""
+        fill
+        unoptimized
+        priority
+        style={{
+          objectFit: "cover",
+          objectPosition: "center",
+          filter: "saturate(1.2)",
+        }}
+        sizes="100vw"
       />
 
-      <div className="mt-5 h-8">
-        {status === "error" && (
-          <p className="font-sc text-sm tracking-wider text-red-800/70 text-center">
-            Não era pra você acessar isso aqui... 🤨
-          </p>
-        )}
-        {status === "success" && (
-          <p className="font-sc text-sm tracking-wider text-green-800/80 text-center">
-            Oi, Sofia rs 😉
-          </p>
-        )}
+      {/* overlay escuro leve para contraste */}
+      <div className="absolute inset-0 bg-black/10" />
+
+      {/* caixa glass */}
+      <div
+        className="relative z-10 flex flex-col items-center px-10 py-12 rounded-2xl animate-glass-place"
+        style={{
+          background: "rgba(255, 255, 255, 0.12)",
+          backdropFilter: "blur(4px) saturate(150%)",
+          WebkitBackdropFilter: "blur(28px) saturate(180%)",
+          border: "1px solid rgba(255, 255, 255, 0.25)",
+          boxShadow:
+            "0 8px 48px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.3)",
+          width: "300px",
+        }}
+      >
+        <h1
+          className="font-display font-bold uppercase text-white text-center mb-2 leading-tight"
+          style={{
+            fontSize: "clamp(2rem, 1.5rem + 2.5vw, 3.5rem)",
+            textShadow: "0 1px 8px rgba(0,0,0,0.3)",
+          }}
+        >
+          Para Sofia
+        </h1>
+
+        <p className="font-body italic text-white/80 text-center mb-10">
+          Digite a data de nascimento para continuar.
+        </p>
+
+        <input
+          type="text"
+          inputMode="numeric"
+          placeholder="DD/MM/AAAA"
+          value={value}
+          onChange={handleChange}
+          className={`w-full max-w-[280px] text-center font-sc tracking-widest bg-transparent border-b py-3 outline-none text-lg transition-colors duration-200 placeholder:text-white/40 ${
+            status === "error"
+              ? "border-red-400/80 text-red-200 animate-shake"
+              : status === "success"
+                ? "border-green-400/80 text-green-200 animate-success"
+                : "border-white/60 text-white"
+          }`}
+        />
+
+        <div className="mt-5 h-8">
+          {status === "error" && (
+            <p className="font-sc text-sm tracking-wider text-red-200/90 text-center">
+              Não era pra você acessar isso aqui... 🤨
+            </p>
+          )}
+          {status === "success" && (
+            <p className="font-sc text-sm tracking-wider text-green-200/90 text-center">
+              Oi, Sofia rs 😉
+            </p>
+          )}
+        </div>
       </div>
     </main>
   );
