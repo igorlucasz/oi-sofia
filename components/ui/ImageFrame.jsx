@@ -17,6 +17,7 @@ export default function ImageFrame({ src, alt = "", className = "", aspectRatio 
           src={src}
           alt={alt}
           fill
+          unoptimized
           className="object-cover"
           style={{ filter: "sepia(60%) contrast(0.95) brightness(0.95)" }}
         />

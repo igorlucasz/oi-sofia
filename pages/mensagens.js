@@ -18,9 +18,10 @@ export default function Mensagens() {
 
       <button
         onClick={() => router.push('/home')}
-        className="fixed top-5 left-5 z-50 flex items-center gap-2 font-sc text-label tracking-wider text-sepia-700 hover:text-gold-600 transition-colors duration-200"
+        className="fixed top-5 left-5 z-50 flex items-center gap-2 font-body italic text-sepia-600 bg-parchment-100/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-warm-sm ring-1 ring-gold-600/20 hover:ring-gold-600/50 transition-all duration-200"
+        style={{ fontSize: '0.95rem' }}
       >
-        ← Voltar
+        <span className="text-gold-500">←</span> início
       </button>
 
       {/* Cabeçalho */}
@@ -44,7 +45,7 @@ export default function Mensagens() {
             <div key={id} className="flex flex-col items-center text-center gap-3">
               <div className="w-16 h-16 rounded-full bg-parchment-300 ring-1 ring-gold-600/40 overflow-hidden flex-shrink-0 relative">
                 {src && (
-                  <Image src={src} alt={nome} fill style={{ objectFit: 'cover' }} />
+                  <Image src={src} alt={nome} fill unoptimized style={{ objectFit: 'cover' }} />
                 )}
               </div>
               <p className="font-sc text-[0.65rem] tracking-wider text-gold-600 uppercase">
