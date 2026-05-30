@@ -1,39 +1,20 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import Image from "next/image";
-import { Hero, Quote } from "../components/sections/index.js";
+import Head from "next/head";
+import { GoldDivider, GoldOrnament, PalmSide } from "../components/vintage-ornaments.jsx";
 
-function GalleryItem({ caption, w, ratio, rot, mt, mb, ty, src }) {
-  const outerStyle = { width: w, flexShrink: 0 };
-  if (mt) outerStyle.marginTop = mt;
-  if (mb) outerStyle.marginBottom = mb;
-  if (ty) outerStyle.transform = `translateY(${ty})`;
-
-  return (
-    <div style={outerStyle}>
-      <div
-        className={`w-full relative overflow-hidden rounded-sm ${src ? "" : "bg-parchment-300 ring-1 ring-gold-600/20"}`}
-        style={{ aspectRatio: ratio, transform: `rotate(${rot})` }}
-      >
-        {src && (
-          <Image
-            src={src}
-            alt=""
-            fill
-            unoptimized
-            style={{ objectFit: "cover" }}
-            sizes="(max-width: 640px) 90vw, 400px"
-          />
-        )}
-      </div>
-      {caption && (
-        <p className="font-body italic text-[0.8rem] text-sepia-700 leading-snug text-center mt-2">
-          {caption}
-        </p>
-      )}
-    </div>
-  );
-}
+const polaroids = [
+  { rot: -6, caption: "um momento especial" },
+  { rot: 5,  caption: "para sempre" },
+  { rot: -3, caption: "memórias" },
+  { rot: 7,  caption: "risos sem fim" },
+  { rot: -8, caption: "domingo lento" },
+  { rot: 4,  caption: "ouro do dia" },
+  { rot: -5, caption: "entre nós" },
+  { rot: 6,  caption: "doce instante" },
+  { rot: -2, caption: "luz de tarde" },
+  { rot: 3,  caption: "guardado aqui" },
+];
 
 export default function Home() {
   const router = useRouter();
@@ -45,155 +26,102 @@ export default function Home() {
   }, [router]);
 
   return (
-    <div className="animate-page-zoom-in">
-      {/* vistarj — abre a página acima do hero, full-bleed */}
-      <div
-        className="relative w-full overflow-hidden"
-        style={{ aspectRatio: "1264/848" }}
-      >
-        <Image
-          src="/images/vistarj.png"
-          alt=""
-          fill
-          unoptimized
-          style={{ objectFit: "cover" }}
-          sizes="100vw"
-          priority
-        />
-      </div>
+    <>
+      <Head>
+        <title>Sofia Marques — 19 anos</title>
+        <meta name="description" content="Memórias construídas ao longo de 19 anos. Feliz aniversário, Sofia Marques." />
+        <meta property="og:title" content="Sofia Marques — 19 anos" />
+        <meta property="og:description" content="Memórias construídas ao longo de 19 anos." />
+      </Head>
 
-      <Hero />
+      <div className="bg-linen relative min-h-screen w-full overflow-x-hidden">
+        <PalmSide side="left" />
+        <PalmSide side="right" />
 
-      <div className="relative">
-        {/* Galeria contínua — memórias e fotos decorativas misturadas */}
-        <section className="bg-parchment-100 pt-12 pb-20 overflow-hidden">
-          <div className="px-5 mx-auto space-y-6" style={{ maxWidth: "500px" }}>
-            {/* mem — retrato, direita */}
-            <div className="flex justify-end">
-              <GalleryItem
-                caption="Aquela tarde boa."
-                w="65%"
-                ratio="3/4"
-                rot="-1.5deg"
-                mt="0rem"
-              />
-            </div>
+        {/* HEADER */}
+        <header className="relative z-10 flex items-center justify-between px-6 pt-6 pb-3">
+          <span className="font-serif-display text-[15px] tracking-[0.18em] text-[color:var(--ink)]">
+            Sofia Marques
+          </span>
+        </header>
 
-            {/* folhas (2:3, grande) + mem quadrado */}
-            <div className="flex items-end gap-3">
-              <GalleryItem
-                src="/images/folhas.png"
-                w="50%"
-                ratio="2/3"
-                rot="2deg"
-                mb="1rem"
-              />
-              <GalleryItem
-                caption="Rindo sem motivo."
-                w="42%"
-                ratio="1/1"
-                rot="-0.8deg"
-              />
-            </div>
+        {/* HERO */}
+        <section className="relative z-10 px-6 pt-8 pb-10 text-center">
+          <GoldOrnament className="mx-auto text-[color:var(--gold)]" width={90} />
 
-            {/* mem — paisagem larga, direita */}
-            <div className="flex justify-end pr-2">
-              <GalleryItem
-                caption="Sempre juntos."
-                w="80%"
-                ratio="16/9"
-                rot="0.5deg"
-              />
-            </div>
+          <h1 className="mt-6 font-serif-display text-[2.5rem] leading-[1.05] font-semibold uppercase tracking-[0.04em] text-[color:var(--ink)] text-shadow-soft">
+            Memórias
+            <br />
+            construídas
+            <br />
+            ao longo de
+            <br />
+            <span className="text-[2.9rem] tracking-tight">19 anos!</span>
+          </h1>
 
-            {/* dois mems retrato, escalonados */}
-            <div className="flex items-start gap-3">
-              <GalleryItem
-                caption="Saudade disso."
-                w="46%"
-                ratio="3/4"
-                rot="-1deg"
-              />
-              <GalleryItem
-                caption="Momento favorito."
-                w="44%"
-                ratio="3/4"
-                rot="1.5deg"
-                mt="2rem"
-              />
-            </div>
+          <p className="mt-6 text-[1.35rem] text-[color:var(--ink)]">
+            <em className="font-serif-body italic">Feliz Aniversário</em>{" "}
+            <span className="not-italic">🥳🥳🥳</span>
+          </p>
 
-            {/* bondinho — retrato solo, grande, levemente à esquerda */}
-            <div className="flex justify-start pl-2">
-              <GalleryItem
-                src="/images/bondinho.png"
-                w="68%"
-                ratio="848/996"
-                rot="-1.2deg"
-              />
-            </div>
+          <GoldDivider className="mx-auto mt-10 w-[260px] text-[color:var(--gold)]" />
+        </section>
 
-            {/* mem — retrato, direita */}
-            <div className="flex justify-end">
-              <GalleryItem
-                caption="Era perfeito."
-                w="58%"
-                ratio="3/4"
-                rot="0.5deg"
-              />
-            </div>
-
-            {/* jornal — retrato solo, grande, levemente à direita */}
-            <div className="flex justify-end pr-2">
-              <GalleryItem
-                src="/images/jornal.png"
-                w="70%"
-                ratio="2/3"
-                rot="-1.5deg"
-              />
-            </div>
-
-            {/* mem — retrato isolado, offset esquerda */}
-            <div className="flex pl-10">
-              <GalleryItem caption="Só nós." w="52%" ratio="3/4" rot="-1deg" />
-            </div>
-
-            {/* castaoportal — paisagem larga, solo, maximizada */}
-            <div className="flex justify-center">
-              <GalleryItem
-                src="/images/castaoportal.png"
-                w="92%"
-                ratio="3/2"
-                rot="-0.8deg"
-              />
-            </div>
-
-            {/* mem — retrato final, direita */}
-            <div className="flex justify-end pr-4">
-              <GalleryItem
-                caption="Ficou na memória."
-                w="52%"
-                ratio="3/4"
-                rot="1.5deg"
-                mt="1rem"
-              />
-            </div>
+        {/* POLAROID GALLERY */}
+        <section className="relative z-10 px-5 pb-16">
+          <div className="grid grid-cols-2 gap-x-3 gap-y-8">
+            {polaroids.map((p, i) => (
+              <div
+                key={i}
+                className="polaroid mx-auto w-[150px]"
+                style={{
+                  transform: `rotate(${p.rot}deg) translateY(${i % 3 === 0 ? "8px" : "0"})`,
+                }}
+              >
+                <img
+                  src={`https://placehold.co/300x300/e8d5b0/8B6914?text=%F0%9F%93%B8`}
+                  alt="memória"
+                  className="block h-[130px] w-full object-cover"
+                  loading="lazy"
+                />
+                <div className="mt-2 text-center font-script text-[1.1rem] leading-none text-[color:var(--ink)]">
+                  {p.caption}
+                </div>
+              </div>
+            ))}
           </div>
         </section>
 
+        {/* SUB-FOOTER */}
+        <section className="relative z-10 px-8 py-14 text-center">
+          <GoldOrnament className="mx-auto text-[color:var(--gold)]" width={70} />
+
+          <blockquote className="mt-6 font-serif-display text-[1.35rem] italic leading-snug text-[color:var(--ink)]">
+            "Tem que tá vendo isso ai né..."
+          </blockquote>
+
+          <div className="mt-4 font-script-fine text-[1.6rem] text-[color:var(--ink)]">
+            — Sofia Marques
+          </div>
+
+          <button
+            onClick={() => router.push("/mensagens")}
+            className="btn-press mt-10 inline-block border border-[color:var(--gold)] bg-[color:var(--ivory)]/40 px-7 py-3 font-serif-display text-[0.78rem] uppercase tracking-vintage text-[color:var(--ink)] transition-colors hover:bg-[color:var(--ivory)]/70"
+          >
+            Mais uma surpresa
+          </button>
+        </section>
+
+        {/* FOOTER */}
+        <footer className="relative z-10 flex items-center justify-between bg-[#2e1a0e] px-6 py-5">
+          <span className="font-serif-display text-[0.7rem] tracking-[0.1em] text-[#c9a96e]">
+            © Sofia Marques 2026
+          </span>
+          <span className="font-serif-display text-[0.7rem] tracking-[0.1em] text-[#c9a96e]/70">
+            Feito por Igor Lucas rsrs
+          </span>
+        </footer>
       </div>
-
-      <Quote />
-
-      {/* Encerramento */}
-      <section className="py-20 px-6 text-center bg-parchment-200">
-        <p className="font-script text-[2.5rem] text-sepia-700 mb-4">
-          Sofia Marques
-        </p>
-        <p className="font-sc text-label tracking-widest text-gold-600 uppercase">
-          02 · 06 · 2007 — 02 · 06 · 2025
-        </p>
-      </section>
-    </div>
+    </>
   );
 }

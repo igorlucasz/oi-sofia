@@ -4,10 +4,13 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        display: ["'Cormorant Garamond'", "Georgia", "serif"],
-        body:    ["'Cormorant'",          "Georgia", "serif"],
-        sc:      ["'Cormorant SC'",       "Georgia", "serif"],
-        script:  ["'Great Vibes'",        "cursive"],
+        display:        ["'Cormorant Garamond'", "Georgia", "serif"],
+        body:           ["'Cormorant'",          "Georgia", "serif"],
+        sc:             ["'Cormorant SC'",        "Georgia", "serif"],
+        script:         ["'Caveat'",             "cursive"],
+        "script-fine":  ["'Dancing Script'",     "cursive"],
+        "serif-display": ["'Playfair Display'",  "serif"],
+        "serif-body":   ["'Cormorant Garamond'", "Georgia", "serif"],
       },
       colors: {
         parchment: {

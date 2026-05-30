@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { MENSAGENS } from '../data/mensagens.js';
-import { OrnamentalDivider } from '../components/ui/index.js';
+import OrnamentalDivider from '../components/OrnamentalDivider.jsx';
 
 export default function Mensagens() {
   const router = useRouter();
