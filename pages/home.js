@@ -1,19 +1,22 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { GoldDivider, GoldOrnament, PalmSide } from "../components/vintage-ornaments.jsx";
 
+const PH_A = "https://placehold.co/600x600/e8d5b0/8B6914?text=%F0%9F%93%B8";
+const PH_B = "https://placehold.co/600x600/c9a86c/6b4e0e?text=%F0%9F%93%B8";
+
 const polaroids = [
-  { rot: -6, caption: "um momento especial" },
-  { rot: 5,  caption: "para sempre" },
-  { rot: -3, caption: "memórias" },
-  { rot: 7,  caption: "risos sem fim" },
-  { rot: -8, caption: "domingo lento" },
-  { rot: 4,  caption: "ouro do dia" },
-  { rot: -5, caption: "entre nós" },
-  { rot: 6,  caption: "doce instante" },
-  { rot: -2, caption: "luz de tarde" },
-  { rot: 3,  caption: "guardado aqui" },
+  { rot: -6, caption: "um momento especial", photos: [PH_A, PH_B] },
+  { rot: 5,  caption: "para sempre",         photos: [PH_A, PH_B] },
+  { rot: -3, caption: "memórias",            photos: [PH_A, PH_B] },
+  { rot: 7,  caption: "risos sem fim",       photos: [PH_A, PH_B] },
+  { rot: -8, caption: "domingo lento",       photos: [PH_A, PH_B] },
+  { rot: 4,  caption: "ouro do dia",         photos: [PH_A, PH_B] },
+  { rot: -5, caption: "entre nós",           photos: [PH_A, PH_B] },
+  { rot: 6,  caption: "doce instante",       photos: [PH_A, PH_B] },
+  { rot: -2, caption: "luz de tarde",        photos: [PH_A, PH_B] },
+  { rot: 3,  caption: "guardado aqui",       photos: [PH_A, PH_B] },
 ];
 
 export default function Home() {
@@ -24,6 +27,78 @@ export default function Home() {
       router.push("/");
     }
   }, [router]);
+
+  // ── Preview auto-cycle ────────────────────────────────────────────────────
+  const [previewIdx, setPreviewIdx] = useState(() => polaroids.map(() => 0));
+
+  useEffect(() => {
+    // Stagger each polaroid's cycle by 800ms so they don't all flip together
+    const cleanups = polaroids.map((p, i) => {
+      let intervalId;
+      const timeoutId = setTimeout(() => {
+        intervalId = setInterval(() => {
+          setPreviewIdx(prev => {
+            const next = [...prev];
+            next[i] = (next[i] + 1) % p.photos.length;
+            return next;
+          });
+        }, 12000);
+      }, i * 800);
+      return () => { clearTimeout(timeoutId); clearInterval(intervalId); };
+    });
+    return () => cleanups.forEach(fn => fn());
+  }, []);
+
+  // ── Modal ─────────────────────────────────────────────────────────────────
+  const [modal, setModal] = useState(null); // { pIdx, phIdx } | null
+
+  const openModal  = (pIdx) => setModal({ pIdx, phIdx: previewIdx[pIdx] });
+  const closeModal = () => setModal(null);
+
+  const goNext = () =>
+    setModal(m => m && { ...m, phIdx: (m.phIdx + 1) % polaroids[m.pIdx].photos.length });
+  const goPrev = () =>
+    setModal(m => m && {
+      ...m,
+      phIdx: (m.phIdx - 1 + polaroids[m.pIdx].photos.length) % polaroids[m.pIdx].photos.length,
+    });
+
+  // Scroll lock while modal is open
+  useEffect(() => {
+    if (!modal) return;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = ""; };
+  }, [!!modal]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (!modal) return;
+    const onKey = (e) => {
+      if (e.key === "Escape")      closeModal();
+      else if (e.key === "ArrowRight") goNext();
+      else if (e.key === "ArrowLeft")  goPrev();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [modal]);
+
+  // ── Drag / swipe (modal) ──────────────────────────────────────────────────
+  const drag = useRef({ startX: 0, active: false });
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const onDragStart = (x) => { drag.current = { startX: x, active: true }; setIsDragging(true); };
+  const onDragMove  = (x) => { if (drag.current.active) setDragOffset(x - drag.current.startX); };
+  const onDragEnd   = ()  => {
+    if (!drag.current.active) return;
+    drag.current.active = false;
+    const delta = dragOffset;
+    setDragOffset(0);
+    setIsDragging(false);
+    if (Math.abs(delta) > 50) delta < 0 ? goNext() : goPrev();
+  };
+
+  const photos = modal ? polaroids[modal.pIdx].photos : [];
 
   return (
     <>
@@ -73,19 +148,22 @@ export default function Home() {
             {polaroids.map((p, i) => (
               <div
                 key={i}
-                className="polaroid mx-auto w-[150px]"
-                style={{
-                  transform: `rotate(${p.rot}deg) translateY(${i % 3 === 0 ? "8px" : "0"})`,
-                }}
+                className="mx-auto w-[150px] cursor-pointer"
+                style={{ transform: `rotate(${p.rot}deg) translateY(${i % 3 === 0 ? "8px" : "0"})` }}
+                onClick={() => openModal(i)}
               >
-                <img
-                  src={`https://placehold.co/300x300/e8d5b0/8B6914?text=%F0%9F%93%B8`}
-                  alt="memória"
-                  className="block h-[130px] w-full object-cover"
-                  loading="lazy"
-                />
-                <div className="mt-2 text-center font-script text-[1.1rem] leading-none text-[color:var(--ink)]">
-                  {p.caption}
+                <div className="polaroid transition-transform duration-150 hover:scale-105 active:scale-95">
+                  <img
+                    key={previewIdx[i]}
+                    src={p.photos[previewIdx[i]]}
+                    alt="memória"
+                    className="block h-[130px] w-full object-cover animate-photo-fade"
+                    loading="lazy"
+                    draggable={false}
+                  />
+                  <div className="mt-2 text-center font-script text-[1.1rem] leading-none text-[color:var(--ink)]">
+                    {p.caption}
+                  </div>
                 </div>
               </div>
             ))}
@@ -122,6 +200,118 @@ export default function Home() {
           </span>
         </footer>
       </div>
+
+      {/* ── MODAL ── */}
+      {modal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm"
+          onClick={closeModal}
+        >
+          {/* Wrapper gives relative context for the floating close button */}
+          <div className="relative animate-modal-in" onClick={(e) => e.stopPropagation()}>
+
+            {/* Close button — floats above the polaroid frame */}
+            <button
+              className="absolute -top-9 right-0 w-8 h-8 flex items-center justify-center text-white/60 hover:text-white transition-colors text-lg"
+              onClick={closeModal}
+            >
+              ✕
+            </button>
+
+          <div
+            className="w-[85vw] max-w-[320px]"
+            style={{
+              background: "#fdfaf3",
+              padding: "10px 10px 42px 10px",
+              boxShadow: "0 16px 48px rgba(0,0,0,0.45), 0 0 0 1px rgba(139,105,20,0.12)",
+            }}
+          >
+            {/* ── Image area (relative + overflow-hidden keeps arrows + fade inside) */}
+            <div
+              className="relative overflow-hidden select-none cursor-grab active:cursor-grabbing"
+              style={{ aspectRatio: "1/1", touchAction: "pan-y" }}
+              onMouseDown={(e) => onDragStart(e.clientX)}
+              onMouseMove={(e) => onDragMove(e.clientX)}
+              onMouseUp={onDragEnd}
+              onMouseLeave={onDragEnd}
+              onTouchStart={(e) => onDragStart(e.touches[0].clientX)}
+              onTouchMove={(e) => onDragMove(e.touches[0].clientX)}
+              onTouchEnd={onDragEnd}
+            >
+              {/* Slide strip — moves horizontally with translateX */}
+              <div
+                className="flex h-full"
+                style={{
+                  transform: `translateX(calc(-${modal.phIdx * 100}% + ${dragOffset}px))`,
+                  transition: isDragging ? "none" : "transform 0.32s cubic-bezier(0.25, 1, 0.5, 1)",
+                  width: `${photos.length * 100}%`,
+                }}
+              >
+                {photos.map((src, i) => (
+                  <img
+                    key={i}
+                    src={src}
+                    alt={`foto ${i + 1}`}
+                    className="object-cover pointer-events-none"
+                    style={{ width: `${100 / photos.length}%`, flexShrink: 0 }}
+                    draggable={false}
+                  />
+                ))}
+              </div>
+
+              {/* Arrows — inset-y-0 so they stay inside overflow-hidden, never bleed into white area */}
+              {photos.length > 1 && (
+                <>
+                  <button
+                    className="absolute left-0 inset-y-0 flex items-center pl-2 pr-6 text-white text-4xl leading-none opacity-60 hover:opacity-100 transition-opacity"
+                    style={{ background: "linear-gradient(to right, rgba(0,0,0,0.30), transparent)" }}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onTouchStart={(e) => e.stopPropagation()}
+                    onClick={(e) => { e.stopPropagation(); goPrev(); }}
+                  >
+                    ‹
+                  </button>
+                  <button
+                    className="absolute right-0 inset-y-0 flex items-center pr-2 pl-6 text-white text-4xl leading-none opacity-60 hover:opacity-100 transition-opacity"
+                    style={{ background: "linear-gradient(to left, rgba(0,0,0,0.30), transparent)" }}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onTouchStart={(e) => e.stopPropagation()}
+                    onClick={(e) => { e.stopPropagation(); goNext(); }}
+                  >
+                    ›
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Caption */}
+            <div className="mt-3 text-center font-script text-[1.15rem] leading-none text-[color:var(--ink)]">
+              {polaroids[modal.pIdx].caption}
+            </div>
+
+            {/* Dot indicators */}
+            {photos.length > 1 && (
+              <div className="flex justify-center gap-2 mt-2">
+                {photos.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setModal(m => m && { ...m, phIdx: i })}
+                    className="w-2 h-2 rounded-full transition-all duration-200"
+                    style={{
+                      background: i === modal.phIdx
+                        ? "oklch(0.512 0.108 70)"
+                        : "oklch(0.512 0.108 70 / 0.25)",
+                      transform: i === modal.phIdx ? "scale(1.3)" : "scale(1)",
+                    }}
+                    aria-label={`foto ${i + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+          </div>{/* /wrapper */}
+        </div>
+      )}
     </>
   );
 }
