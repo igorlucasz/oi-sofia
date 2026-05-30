@@ -153,14 +153,22 @@ export default function Home() {
                 onClick={() => openModal(i)}
               >
                 <div className="polaroid transition-transform duration-150 hover:scale-105 active:scale-95">
-                  <img
-                    key={previewIdx[i]}
-                    src={p.photos[previewIdx[i]]}
-                    alt="memória"
-                    className="block h-[130px] w-full object-cover animate-photo-fade"
-                    loading="lazy"
-                    draggable={false}
-                  />
+                  {/* Crossfade: todas as fotos empilhadas, só a atual com opacity 1 */}
+                  <div className="relative h-[130px] w-full overflow-hidden">
+                    {p.photos.map((src, j) => (
+                      <img
+                        key={j}
+                        src={src}
+                        alt="memória"
+                        className="absolute inset-0 w-full h-full object-cover"
+                        style={{
+                          opacity: j === previewIdx[i] ? 1 : 0,
+                          transition: "opacity 0.7s ease",
+                        }}
+                        draggable={false}
+                      />
+                    ))}
+                  </div>
                   <div className="mt-2 text-center font-script text-[1.1rem] leading-none text-[color:var(--ink)]">
                     {p.caption}
                   </div>
@@ -238,26 +246,22 @@ export default function Home() {
               onTouchMove={(e) => onDragMove(e.touches[0].clientX)}
               onTouchEnd={onDragEnd}
             >
-              {/* Slide strip — moves horizontally with translateX */}
-              <div
-                className="flex h-full"
-                style={{
-                  transform: `translateX(calc(-${modal.phIdx * 100}% + ${dragOffset}px))`,
-                  transition: isDragging ? "none" : "transform 0.32s cubic-bezier(0.25, 1, 0.5, 1)",
-                  width: `${photos.length * 100}%`,
-                }}
-              >
-                {photos.map((src, i) => (
-                  <img
-                    key={i}
-                    src={src}
-                    alt={`foto ${i + 1}`}
-                    className="object-cover pointer-events-none"
-                    style={{ width: `${100 / photos.length}%`, flexShrink: 0 }}
-                    draggable={false}
-                  />
-                ))}
-              </div>
+              {/* Slide: cada foto ocupa 100% do container e se posiciona
+                  pelo seu índice relativo ao atual. % é relativo à própria
+                  largura da img (= container), então 1 passo = 1 tela. */}
+              {photos.map((src, i) => (
+                <img
+                  key={i}
+                  src={src}
+                  alt={`foto ${i + 1}`}
+                  className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                  style={{
+                    transform: `translateX(calc(${(i - modal.phIdx) * 100}% + ${dragOffset}px))`,
+                    transition: isDragging ? "none" : "transform 0.32s cubic-bezier(0.25, 1, 0.5, 1)",
+                  }}
+                  draggable={false}
+                />
+              ))}
 
               {/* Arrows — inset-y-0 so they stay inside overflow-hidden, never bleed into white area */}
               {photos.length > 1 && (
